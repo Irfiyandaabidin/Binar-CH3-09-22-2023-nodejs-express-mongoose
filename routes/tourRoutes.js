@@ -3,20 +3,20 @@ const tourController = require('../controllers/toursController')
 
 const router = express.Router()
 
-router.param('id', tourController.checkId)
+// router.param('id', tourController.checkId)
 
 // ROUTES UNTUK TOUERS
 router
   .route("/")
-  .get(tourController.getAllTours)
+  .get(tourController.getAllToursModels)
   .post(
-    tourController.checkBody,
-    tourController.createTour
+    // tourController.checkBody,
+    tourController.createTourModel
     )
 
 router
   .route("/:id")
-  .get(tourController.getTourById)
+  .get(tourController.getTourByIdModel)
   .patch(tourController.editTour)
   .delete(tourController.removeTour)
 

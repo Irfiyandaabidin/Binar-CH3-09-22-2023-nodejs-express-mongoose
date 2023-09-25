@@ -1,5 +1,6 @@
 const fs = require("fs")
 const morgan = require("morgan")
+const Tour = require('../models/tours-models')
 
 const tours = JSON.parse(
   fs.readFileSync(
@@ -32,30 +33,7 @@ const checkBody = (req, res, next) => {
   next()
 }
 
-const getAllTours = (req, res) => {
-  res.status(200).json({
-    status: "success",
-    requestTime: req.requestTime,
-    data: {
-      tours,
-    },
-  })
-}
-
-const getTourById = (req, res) => {
-  const id = req.params.id * 1
-  const tour = tours.find((el) => el.id === id)
-
-  res.status(200).json({
-    status: "success",
-    data: {
-      tour,
-    },
-  })
-}
-
 const createTour = (req, res) => {
-  console.log(req.body.role)
   // generate id untuk data baru dari request api kita
   const newId = tours[tours.length - 1].id + 1
   const newData = Object.assign(
@@ -77,6 +55,80 @@ const createTour = (req, res) => {
       })
     }
   )
+}
+
+const createTourModel = async (req, res) => {
+  try {
+    const newTour = await Tour.create(req.body); // Membuat tour baru dengan data dari req.body
+    res.status(201).json({
+      status: "success",
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err.message, // Menampilkan pesan kesalahan jika terjadi kesalahan
+    });
+  }
+};
+
+const getAllTours = (req, res) => {
+  res.status(200).json({
+    status: "success",
+    requestTime: req.requestTime,
+    data: {
+      tours,
+    },
+  })
+}
+
+const getAllToursModels = async (req, res) => {
+  try {
+    const tours = await Tour.find()
+    res.status(200).json({
+      status: "success",
+      requestTime: req.requestTime,
+      data: {
+        tours,
+      },
+    })
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err.message, // Menampilkan pesan kesalahan jika terjadi kesalahan
+    });
+  }
+}
+
+const getTourById = (req, res) => {
+  const id = req.params.id * 1
+  const tour = tours.find((el) => el.id === id)
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      tour,
+    },
+  })
+}
+
+const getTourByIdModel = async(req, res) => {
+  try {
+    const tour = await Tour.findById(req.params.id)
+    res.status(200).json({
+      status: "success",
+      data: {
+        tour,
+      },
+    })
+  } catch (err) {
+    res.status(400).json({
+      status: "fail",
+      message: err.message, // Menampilkan pesan kesalahan jika terjadi kesalahan
+    });
+  }
 }
 
 const editTour = (req, res) => {
@@ -137,8 +189,11 @@ module.exports = {
   createTour,
   editTour,
   getAllTours,
+  getAllToursModels,
   getTourById,
+  getTourByIdModel,
   removeTour,
   checkId,
-  checkBody
+  checkBody,
+  createTourModel
 }
