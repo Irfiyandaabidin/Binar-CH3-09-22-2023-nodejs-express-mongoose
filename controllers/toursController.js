@@ -185,14 +185,65 @@ const removeTour = (req, res) => {
   )
 }
 
+const editTourModels = async (req, res) => {
+  try{
+    const id = req.params.id;
+    const updateTour = await Tour.findByIdAndUpdate(id, req.body, {new:true});
+    if(!updateTour) {
+      return res.status(400).json({
+        status: 400,
+        message : "Id Not Found"
+      })
+    }
+    res.status(201).json({
+      status: "success",
+      data: {
+        tour: updateTour,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err.message
+    })
+  }
+}
+
+const removeTourModel = async (req, res) => {
+  try {
+    const id = req.params.id
+    const tour = await Tour.findByIdAndDelete(id)
+    if (!tour) {
+      return res.status(400).json({
+        status: "failed",
+        message: "id not found",
+        data: null,
+      })
+    }
+    res.status(200).json({
+      status: "success",
+      message: `success delete id ${id}`,
+      data: null,
+    })
+  } catch (err) {
+    res.status(500).json({
+      status: 500,
+      message: err.message
+    })
+  }
+}
+
+
 module.exports = {
   createTour,
   editTour,
+  editTourModels,
   getAllTours,
   getAllToursModels,
   getTourById,
   getTourByIdModel,
   removeTour,
+  removeTourModel,
   checkId,
   checkBody,
   createTourModel

@@ -17,7 +17,7 @@ router
 router
   .route("/:id")
   .get(tourController.getTourByIdModel)
-  .patch(tourController.editTour)
-  .delete(tourController.removeTour)
+  .patch(tourController.editTourModels)
+  .delete(tourController.removeTourModel)
 
 module.exports = router
